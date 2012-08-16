@@ -134,13 +134,13 @@ Also provided for Rails compatibility:
 
 Supported memcached clients:
 
-* [memcached](https://github.com/fauna/memcached) (native C extensions, super fast!)
-* [dalli](https://github.com/mperham/dalli) (pure ruby, recommended if you're on heroku)
-* [memcache-client](https://github.com/mperham/memcache-client) (not recommended. the one that comes with Rails.)
+* [memcached](https://github.com/fauna/memcached) ~> 1.4 (native C extensions, super fast!)
+* [dalli](https://github.com/mperham/dalli) ~> 2.1 (pure ruby, recommended if you're on heroku)
+* [memcache-client](https://github.com/mperham/memcache-client) ~> 1.8 (not recommended. the one that comes with Rails.)
 
 Supported Redis clients:
 
-* [redis](https://github.com/ezmobius/redis-rb)
+* [redis](https://github.com/ezmobius/redis-rb) ~> 3.0
 
 ## How you might use it
 

@@ -1,15 +1,19 @@
 source :rubygems
 
-# Specify your gem's dependencies in cache.gemspec
+# Production dependencies
 gemspec
-gem 'yard'
-gem 'test-unit'
-gem 'redis'
-gem 'redis-namespace'
-gem 'dalli'
+
+# Development dependencies
+
+gem 'yard', '~> 0.8'
+gem 'test-unit', '~> 2.5'
+
+gem 'redis', '~> 3.0'
+gem 'redis-namespace', '~> 1.2'
+gem 'dalli', '~> 2.1'
 unless RUBY_PLATFORM == 'java'
-  gem 'memcached'
+  gem 'memcached', '~> 1.4'
 end
-gem 'memcache-client'
+gem 'memcache-client', '~> 1.8'
 gem 'rake'
-gem 'rack' # for ActiveSupport::Cache::FileStore of all things
+gem 'rack', '~> 1.4' # for ActiveSupport::Cache::FileStore of all things
