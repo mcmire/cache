@@ -1,8 +1,8 @@
 module Cache::Redis
   def after_fork
-    @metal.quit
+    @metal.client.reconnect
   end
-  
+
   def _get(k)
     if cached_v = @metal.get(k) and cached_v.is_a?(::String)
       ::Marshal.load cached_v
