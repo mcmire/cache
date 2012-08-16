@@ -2,7 +2,7 @@ require 'helper'
 
 require 'dalli'
 
-class TestDalliStorage < Test::Unit::TestCase
+class TestDalliClient < Test::Unit::TestCase
   def raw_client_class
     Dalli::Client
   end

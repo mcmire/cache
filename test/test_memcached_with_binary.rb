@@ -3,7 +3,7 @@ require 'helper'
 unless RUBY_PLATFORM == 'java'
   require 'memcached'
 
-  class TestMemcachedBinaryStorage < Test::Unit::TestCase
+  class TestMemcachedWithBinary < Test::Unit::TestCase
     def raw_client_class
       Memcached
     end

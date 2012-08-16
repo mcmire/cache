@@ -1,6 +1,6 @@
 require 'helper'
 
-class TestMemoryStoreStorage < Test::Unit::TestCase
+class TestActiveSupportCacheMemoryStore < Test::Unit::TestCase
   def raw_client_class
     ActiveSupport::Cache::MemoryStore
   end
@@ -11,3 +11,4 @@ class TestMemoryStoreStorage < Test::Unit::TestCase
 
   include SharedTests
 end
+

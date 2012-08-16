@@ -3,7 +3,7 @@ require 'helper'
 require 'redis'
 require 'uri'
 
-class TestRedisStorage < Test::Unit::TestCase
+class TestRedis < Test::Unit::TestCase
   def raw_client_class
     Redis
   end

@@ -3,7 +3,7 @@ require 'helper'
 # the famous memcache-client
 require 'memcache'
 
-class TestMemcacheStorage < Test::Unit::TestCase
+class TestMemCache < Test::Unit::TestCase
   def raw_client_class
     MemCache
   end
