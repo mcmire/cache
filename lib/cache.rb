@@ -21,24 +21,44 @@ class Cache
   # Create a new Cache instance by wrapping a client of your choice.
   #
   # Supported memcached clients:
+  #
   # * memcached[https://github.com/evan/memcached] (either a Memcached or a Memcached::Rails)
   # * dalli[https://github.com/mperham/dalli] (either a Dalli::Client or an ActiveSupport::Cache::DalliStore)
   # * memcache-client[https://github.com/mperham/memcache-client] (MemCache, the one commonly used by Rails)
   #
   # Supported Redis clients:
-  # * redis[https://github.com/ezmobius/redis-rb]
-  # * redis-namespace[https://github.com/defunkt/redis-namespace]
   #
-  # Example:
-  #     raw_client = Memcached.new('127.0.0.1:11211')
-  #     cache = Cache.new(raw_client)
+  # * redis[https://github.com/ezmobius/redis-rb] (Redis)
+  # * redis-namespace[https://github.com/defunkt/redis-namespace] (Redis::Namespace)
+  #
+  # metal - Either an instance of one of the above classes, or :nothing if you
+  #         want to use the Cache API but not actually cache anything.
+  #
+  # Examples:
+  #
+  #   # Use Memcached
+  #   raw_client = Memcached.new('127.0.0.1:11211')
+  #   cache = Cache.new(raw_client)
+  #   cache.get(...)
+  #   cache.set(...)
+  #
+  #   # Don't cache anything
+  #   cache = Cache.new(:nothing)
+  #   cache.get(...)
+  #   cache.set(...)
   #
   def initialize(metal)
     @pid = ::Process.pid
     @config = Config.new
-    @metal = Cache === metal ? metal.metal : metal
-    client_class = @metal.class.to_s
-    driver_class = client_class.gsub('::', '')
+    if metal == :nothing
+      @metal = nil
+      client_class = 'Nothing'
+      driver_class = 'Nothing'
+    else
+      @metal = Cache === metal ? metal.metal : metal
+      client_class = @metal.class.to_s
+      driver_class = client_class.gsub('::', '')
+    end
     filename = client_class.
       gsub(/([a-z])([A-Z]+)/) { [$1.downcase, $2.downcase].join('_') }.
       gsub('::', '_').downcase
