@@ -14,16 +14,16 @@ In production use at [carbon.brighterplanet.com](http://carbon.brighterplanet.co
 
     require 'memcached' # a really fast memcached client gem by Evan Weaver, one of the lead engineers at Twitter
     require 'cache'     # this gem, which wraps the client to provide a standard interface
-    
+
     client = Memcached.new('127.0.0.1:11211', :binary_protocol => true)
     @cache = Cache.wrap(client)
-    
+
     # don't worry, even though it's memcached gem, this won't raise Memcached::NotFound
     @cache.get('hello')
-    
+
     # fetch is not provided by the memcached gem, the wrapper adds it
     @cache.fetch('hello') { 'world' }
-    
+
     # don't worry, the wrapper will automatically clone the Memcached object after forking (or threading for that matter)
     Kernel.fork { @cache.get('hello') }
 
