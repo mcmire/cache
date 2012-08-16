@@ -20,7 +20,7 @@ class Cache
   def self.wrap(metal = nil)
     new metal
   end
-  
+
   attr_reader :config
   attr_reader :metal
 
@@ -106,6 +106,7 @@ class Cache
     handle_fork
     _exist? k
   end
+  alias_method :exists?, :exist?
 
   # Increment a value.
   #
@@ -169,7 +170,7 @@ class Cache
   end
 
   private
-  
+
   def handle_fork
     if ::Process.pid != @pid
       @pid = ::Process.pid

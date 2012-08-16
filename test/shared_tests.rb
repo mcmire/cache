@@ -45,6 +45,12 @@ module SharedTests
     assert @cache.exist?('hello')
   end
 
+  def test_exists
+    assert !@cache.exists?('hello')
+    @cache.set 'hello', 'world'
+    assert @cache.exists?('hello')
+  end
+
   # This is not working with the Dalli client
   #def test_exist_key_with_nil_value
   #  assert !@cache.exist?('hello')
