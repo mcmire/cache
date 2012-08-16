@@ -120,6 +120,11 @@ class Cache
   #     cache.fetch 'hello' { 'world' }
   def fetch(k, ttl = nil, &blk)
     handle_fork
+    _fetch(k, ttl, &blk)
+  end
+
+  # Default implementation of #fetch which is overridden in some drivers
+  def _fetch(k, ttl, &blk)
     if _exist? k
       _get k
     elsif blk
@@ -135,6 +140,13 @@ class Cache
   #     cache.cas 'hello' { |current| 'world' }
   def cas(k, ttl = nil, &blk)
     handle_fork
+    _cas(k, ttl, &blk)
+  end
+
+  alias :compare_and_swap :cas
+
+  # Default implementation of #cas which is overridden in some drivers
+  def _cas(k, ttl, &blk)
     if blk and _exist?(k)
       old_v = _get k
       new_v = blk.call old_v
@@ -142,8 +154,6 @@ class Cache
       new_v
     end
   end
-
-  alias :compare_and_swap :cas
 
   # Get stats.
   #

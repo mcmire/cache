@@ -1,11 +1,4 @@
 module Cache::ActiveSupportCacheStore
-  # native
-  def fetch(k, ttl = nil, &blk)
-    handle_fork
-    @metal.fetch k, { :expires_in => extract_ttl(ttl) }, &blk
-  end
-  # --
-
   def _get(k)
     @metal.read k
   end
@@ -20,6 +13,10 @@ module Cache::ActiveSupportCacheStore
     else
       @metal.write k, v, :expires_in => ttl
     end
+  end
+
+  def _fetch(k, ttl, &blk)
+    @metal.fetch k, { :expires_in => extract_ttl(ttl) }, &blk
   end
 
   def _delete(k)

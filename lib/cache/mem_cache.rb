@@ -15,6 +15,10 @@ module Cache::MemCache
     @metal.set k, v, ttl
   end
 
+  def _fetch(k, ttl, &blk)
+    @metal.fetch k, extract_ttl(ttl), &blk
+  end
+
   def _delete(k)
     @metal.delete k
   end
@@ -31,11 +35,4 @@ module Cache::MemCache
   def _stats
     @metal.stats
   end
-
-  # native
-  def fetch(k, ttl = nil, &blk)
-    handle_fork
-    @metal.fetch k, extract_ttl(ttl), &blk
-  end
-  # --
 end

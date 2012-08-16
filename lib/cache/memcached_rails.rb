@@ -1,4 +1,5 @@
 require 'cache/memcached'
+
 module Cache::MemcachedRails
   def self.extended(base)
     base.extend Cache::Memcached
@@ -8,7 +9,6 @@ module Cache::MemcachedRails
   module Override
     def _exist?(k)
       thread_metal.exist? k
-      # !get(k).nil?
     end
 
     def _get(k)
@@ -19,15 +19,12 @@ module Cache::MemcachedRails
       thread_metal.get_multi ks
     end
 
+    def _cas(k, ttl, &blk)
+      thread_metal.cas k, extract_ttl(ttl), &blk
+    end
+
     def _delete(k)
       thread_metal.delete k
     end
-
-    # native
-    def cas(k, ttl = nil, &blk)
-      handle_fork
-      thread_metal.cas k, extract_ttl(ttl), &blk
-    end
-    # --
   end
 end
