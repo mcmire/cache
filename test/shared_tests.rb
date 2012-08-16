@@ -1,4 +1,18 @@
 module SharedTests
+  def test_metal
+    assert_equal raw_client_class, @cache.metal.class
+  end
+
+  def test_wrap_twice
+    c = Cache.new(Cache.new(raw_client))
+    assert_equal raw_client_class, c.metal.class
+  end
+
+  def test_wrap_absurd
+    c = Cache.new(Cache.new(Cache.new(raw_client)))
+    assert_equal raw_client_class, c.metal.class
+  end
+
   def test_get
     assert_equal nil, @cache.get('hello')
     @cache.set 'hello', 'world'

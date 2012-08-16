@@ -4,12 +4,16 @@ require 'redis'
 require 'uri'
 
 class TestRedisStorage < Test::Unit::TestCase
-  def raw_client
-    Redis.new#(:host => uri.host, :port => uri.port, :password => uri.password)
+  def raw_client_class
+    Redis
   end
-  
+
+  def raw_client
+    raw_client_class.new#(:host => uri.host, :port => uri.port, :password => uri.password)
+  end
+
   include SharedTests
-  
+
   # client DOT client
   def get_redis_client_connection_socket_id
     connection = @cache.metal.client.instance_variable_get :@connection
@@ -17,7 +21,7 @@ class TestRedisStorage < Test::Unit::TestCase
     # $stderr.puts sock.inspect
     sock.object_id
   end
-  
+
   def test_treats_as_thread_safe
     # make sure ring is initialized
     @cache.get 'hi'

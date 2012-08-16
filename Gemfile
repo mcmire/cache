@@ -8,6 +8,9 @@ gemspec
 gem 'yard', '~> 0.8'
 gem 'test-unit', '~> 2.5'
 
+gem 'activesupport', '>= 2.3.11'
+gem 'i18n'
+
 gem 'redis', '~> 3.0'
 gem 'redis-namespace', '~> 1.2'
 gem 'dalli', '~> 2.1'

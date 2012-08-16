@@ -2,9 +2,13 @@ require 'active_support/core_ext'
 require 'cache/config'
 
 class Cache
+  attr_reader :config
+  attr_reader :metal
+
+  # For compatibility with Rails 2.x
+  attr_accessor :logger
+
   # Create a new Cache instance by wrapping a client of your choice.
-  #
-  # Defaults to an in-process memory store.
   #
   # Supported memcached clients:
   # * memcached[https://github.com/evan/memcached] (either a Memcached or a Memcached::Rails)
@@ -16,31 +20,12 @@ class Cache
   #
   # Example:
   #     raw_client = Memcached.new('127.0.0.1:11211')
-  #     cache = Cache.wrap raw_client
-  def self.wrap(metal = nil)
-    new metal
-  end
-
-  attr_reader :config
-  attr_reader :metal
-
-  # For compatibility with Rails 2.x
-  attr_accessor :logger
-
-  def initialize(metal = nil) #:nodoc:
+  #     cache = Cache.new(raw_client)
+  #
+  def initialize(metal)
     @pid = ::Process.pid
     @config = Config.new
-    @metal = if metal.is_a?(Cache)
-      metal.metal
-    elsif metal
-      metal
-    elsif defined?(::Rails) and ::Rails.respond_to?(:cache) and rails_cache = ::Rails.cache
-      rails_cache
-    else
-      require 'active_support/cache'
-      require 'active_support/cache/memory_store'
-      ::ActiveSupport::Cache::MemoryStore.new
-    end
+    @metal = Cache === metal ? metal.metal : metal
     metal_class = @metal.class.name.delete('::') # Memcached::Rails -> 'MemcachedRails'
     require "cache/#{metal_class.underscore}"
     extend Cache.const_get(metal_class)

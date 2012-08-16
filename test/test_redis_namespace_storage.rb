@@ -4,13 +4,16 @@ require 'redis'
 require 'redis-namespace'
 
 class TestRedisNamespaceStorage < Test::Unit::TestCase
-  def raw_client
-    r = Redis.new
-    Redis::Namespace.new(:test_cache, :redis => r)
+  def raw_client_class
+    Redis::Namespace
   end
-  
+
+  def raw_client
+    raw_client_class.new(:test_cache, :redis => Redis.new)
+  end
+
   include SharedTests
-  
+
   # client DOT client
   def get_redis_client_connection_socket_id
     connection = @cache.metal.client.instance_variable_get :@connection
@@ -18,7 +21,7 @@ class TestRedisNamespaceStorage < Test::Unit::TestCase
     # $stderr.puts sock.inspect
     sock.object_id
   end
-  
+
   def test_treats_as_thread_safe
     # make sure ring is initialized
     @cache.get 'hi'

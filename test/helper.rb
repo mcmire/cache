@@ -14,7 +14,7 @@ require 'shared_tests'
 
 class Test::Unit::TestCase
   def setup
-    @cache = Cache.wrap raw_client
+    @cache = Cache.new(raw_client)
     @cache.flush
   end
 end
