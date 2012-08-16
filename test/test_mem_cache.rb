@@ -3,7 +3,11 @@ require 'helper'
 # the famous memcache-client
 require 'memcache'
 
-class TestMemCache < Test::Unit::TestCase
+class TestMemCache < TestCase
+  def self.startup
+    MemCache
+  end
+
   def raw_client_class
     MemCache
   end
@@ -15,22 +19,22 @@ class TestMemCache < Test::Unit::TestCase
   include SharedTests
 
   def get_server_status_ids
-    @cache.metal.instance_variable_get(:@servers).map { |s| s.status.object_id }
+    cache.metal.instance_variable_get(:@servers).map { |s| s.status.object_id }
   end
 
   def test_treats_as_thread_safe
     # make sure servers are connected
-    @cache.get 'hi'
+    cache.get 'hi'
 
     # get the object ids
     main_thread_server_status_ids = get_server_status_ids
 
     # sanity check that it's not changing every time
-    @cache.get 'hi'
+    cache.get 'hi'
     assert_equal main_thread_server_status_ids, get_server_status_ids
 
     # create a new thread and get its server ids
-    new_thread_server_status_ids = Thread.new { @cache.get 'hi'; get_server_status_ids }.value
+    new_thread_server_status_ids = Thread.new { cache.get 'hi'; get_server_status_ids }.value
 
     # make sure the server ids was reinitialized
     assert_equal main_thread_server_status_ids, new_thread_server_status_ids
@@ -38,18 +42,18 @@ class TestMemCache < Test::Unit::TestCase
 
   def test_treats_as_not_fork_safe
     # make sure server ids is initialized
-    @cache.get 'hi'
+    cache.get 'hi'
 
     # get the main thread's server ids
     parent_process_server_status_ids = get_server_status_ids
 
     # sanity check that it's not changing every time
-    @cache.get 'hi'
+    cache.get 'hi'
     assert_equal parent_process_server_status_ids, get_server_status_ids
 
     # fork a new process
     pid = Kernel.fork do
-      @cache.get 'hi'
+      cache.get 'hi'
       raise "Didn't split!" if parent_process_server_status_ids == get_server_status_ids
     end
     Process.wait pid

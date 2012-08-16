@@ -4,7 +4,7 @@ require 'fileutils'
 
 require 'active_support/cache'
 
-class TestActiveSupportCacheFileStore < Test::Unit::TestCase
+class TestActiveSupportCacheFileStore < TestCase
   def raw_client_class
     ActiveSupport::Cache::FileStore
   end

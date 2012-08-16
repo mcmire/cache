@@ -1,6 +1,17 @@
 require 'cache/config'
 
 class Cache
+  class Error < StandardError; end
+  class DriverNotFound < Error
+    def initialize(client_class)
+      @client_class = client_class
+    end
+
+    def message
+      "The cache gem doesn't support #{@client_class} yet"
+    end
+  end
+
   attr_reader :config
   attr_reader :metal
 
@@ -16,6 +27,7 @@ class Cache
   #
   # Supported Redis clients:
   # * redis[https://github.com/ezmobius/redis-rb]
+  # * redis-namespace[https://github.com/defunkt/redis-namespace]
   #
   # Example:
   #     raw_client = Memcached.new('127.0.0.1:11211')
@@ -25,9 +37,19 @@ class Cache
     @pid = ::Process.pid
     @config = Config.new
     @metal = Cache === metal ? metal.metal : metal
-    metal_class = @metal.class.name.delete('::') # Memcached::Rails -> 'MemcachedRails'
-    require "cache/#{metal_class.underscore}"
-    extend Cache.const_get(metal_class)
+    client_class = @metal.class.to_s
+    driver_class = client_class.gsub('::', '')
+    filename = client_class.
+      gsub(/([a-z])([A-Z]+)/) { [$1.downcase, $2.downcase].join('_') }.
+      gsub('::', '_').downcase
+    begin
+      require "cache/#{filename}"
+      extend Cache.const_get(driver_class)
+    rescue LoadError, NameError => e
+      puts "#{e.class}: #{e.message}"
+      puts e.backtrace[0..5].join("\n")
+      raise DriverNotFound, client_class
+    end
   end
 
   # Get a value.
@@ -187,3 +209,4 @@ class Cache
     end.to_i
   end
 end
+
