@@ -1,5 +1,7 @@
 require 'helper'
 
+require 'active_support/cache'
+
 class TestActiveSupportCacheMemoryStore < Test::Unit::TestCase
   def raw_client_class
     ActiveSupport::Cache::MemoryStore

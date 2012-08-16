@@ -1,8 +1,8 @@
 require 'helper'
 
 require 'dalli'
-require 'active_support/all'
 require 'active_support/cache/dalli_store'
+require 'active_support/cache'
 
 class TestActiveSupportCacheDalliStore < Test::Unit::TestCase
   def raw_client_class
