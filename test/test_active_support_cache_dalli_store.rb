@@ -59,4 +59,19 @@ class TestActiveSupportCacheDalliStore < TestCase
     # make sure it didn't raise
     assert $?.success?
   end
+
+  def test_set_with_default_dalli_ttl
+    cache = Cache.new(ActiveSupport::Cache::DalliStore.new(:expires_in => 1))
+    cache.set('foo', 'bar')
+    sleep 2
+    assert_equal nil, cache.get('foo')
+  end
+
+  def test_fetch_with_default_dalli_ttl
+    cache = Cache.new(ActiveSupport::Cache::DalliStore.new(:expires_in => 1))
+    cache.fetch('foo') { 'bar' }
+    sleep 2
+    assert_equal nil, cache.fetch('foo')
+    assert_equal 'different', cache.fetch('foo') { 'different' }
+  end
 end

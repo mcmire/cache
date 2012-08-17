@@ -7,10 +7,6 @@ class TestDalliClient < TestCase
     Dalli::Client
   end
 
-  def raw_client
-    raw_client_class.new ['localhost:11211']
-  end
-
   include SharedTests
 
   def get_ring_object_id
@@ -55,5 +51,20 @@ class TestDalliClient < TestCase
 
     # make sure it didn't raise
     assert $?.success?
+  end
+
+  def test_set_with_default_dalli_ttl
+    cache = Cache.new(Dalli::Client.new(nil, :expires_in => 1))
+    cache.set('foo', 'bar')
+    sleep 2
+    assert_equal nil, cache.get('foo')
+  end
+
+  def test_fetch_with_default_dalli_ttl
+    cache = Cache.new(Dalli::Client.new(nil, :expires_in => 1))
+    cache.fetch('foo') { 'bar' }
+    sleep 2
+    assert_equal nil, cache.fetch('foo')
+    assert_equal 'different', cache.fetch('foo') { 'different' }
   end
 end
