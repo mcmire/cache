@@ -8,15 +8,19 @@ module Cache::ActiveSupportCacheStore
   end
 
   def _set(k, v, ttl)
-    if ttl == 0
-      @metal.write k, v # never expire
-    else
+    if _valid_ttl?(ttl)
       @metal.write k, v, :expires_in => ttl
+    else
+      @metal.write k, v
     end
   end
 
   def _fetch(k, ttl, &blk)
-    @metal.fetch k, { :expires_in => _get_ttl(ttl) }, &blk
+    if _valid_ttl?(ttl)
+      @metal.fetch k, { :expires_in => ttl }, &blk
+    else
+      @metal.fetch k, &blk
+    end
   end
 
   def _delete(k)
@@ -29,6 +33,5 @@ module Cache::ActiveSupportCacheStore
 
   def _exist?(k)
     @metal.exist? k
-    # !get(k).nil?
   end
 end

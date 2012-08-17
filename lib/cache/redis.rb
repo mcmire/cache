@@ -4,8 +4,8 @@ module Cache::Redis
   end
 
   def _get(k)
-    if cached_v = @metal.get(k) and cached_v.is_a?(::String)
-      ::Marshal.load cached_v
+    if cached_v = @metal.get(k) and cached_v.is_a?(String)
+      Marshal.load cached_v
     end
   end
 
@@ -19,10 +19,10 @@ module Cache::Redis
   end
 
   def _set(k, v, ttl)
-    if ttl == 0
-      @metal.set k, ::Marshal.dump(v)
+    if _valid_ttl?(ttl)
+      @metal.setex k, ttl, Marshal.dump(v)
     else
-      @metal.setex k, ttl, ::Marshal.dump(v)
+      @metal.set k, Marshal.dump(v)
     end
   end
 

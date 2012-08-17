@@ -20,7 +20,11 @@ module Cache::MemcachedRails
     end
 
     def _cas(k, ttl, &blk)
-      thread_metal.cas k, ttl, &blk
+      if _valid_ttl?(ttl)
+        thread_metal.cas k, ttl, &blk
+      else
+        thread_metal.cas k, &blk
+      end
     end
 
     def _delete(k)

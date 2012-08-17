@@ -164,7 +164,8 @@ class Cache
     _fetch(k, _get_ttl(ttl), &blk)
   end
 
-  # Default implementation of #fetch which is overridden in some drivers
+  # Default implementation of #fetch for drivers that do not define a method
+  # natively for it
   def _fetch(k, ttl, &blk)
     if _exist? k
       _get k
@@ -223,6 +224,10 @@ class Cache
       ttl = ttl[:expires_in] || ttl['expires_in'] || ttl[:ttl] || ttl['ttl']
     end
     ttl || config.default_ttl
+  end
+
+  def _valid_ttl?(ttl)
+    ttl and ttl > 0
   end
 end
 

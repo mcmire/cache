@@ -12,11 +12,19 @@ module Cache::MemCache
   end
 
   def _set(k, v, ttl)
-    @metal.set k, v, ttl
+    if _valid_ttl?(ttl)
+      @metal.set k, v, ttl
+    else
+      @metal.set k, v
+    end
   end
 
   def _fetch(k, ttl, &blk)
-    @metal.fetch k, ttl, &blk
+    if _valid_ttl?(ttl)
+      @metal.fetch k, ttl, &blk
+    else
+      @metal.fetch k, &blk
+    end
   end
 
   def _delete(k)
