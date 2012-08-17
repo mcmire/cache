@@ -18,7 +18,7 @@ module Cache::Memcached
   end
 
   def _cas(k, ttl, &blk)
-    thread_metal.cas k, extract_ttl(ttl), &blk
+    thread_metal.cas k, ttl, &blk
   rescue ::Memcached::NotFound
     return nil
   end

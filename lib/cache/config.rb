@@ -1,19 +1,27 @@
+
 class Cache
-  # Here's where config options are kept.
-  #
-  # Example:
-  #     cache.config.default_ttl = 120 # seconds
   class Config
-    # TTL for method caches. Defaults to 60 seconds.
+
+    # Set the default TTL that keys will live when not specifying a TTL.
+    #
+    # ttl - Integer in seconds.
     #
     # Example:
-    #     cache.config.default_ttl = 120 # seconds
+    #
+    #   cache.config.default_ttl = 120
+    #   cache.set('foo', 'val')  # equivalent to set('foo', 'val', 120)
+    #
     def default_ttl=(seconds)
       @default_ttl = seconds
     end
-    
-    def default_ttl #:nodoc:
-      @default_ttl || 60
+
+    # Get the currently set TTL.
+    #
+    # Returns an Integer in seconds.
+    #
+    def default_ttl
+      @default_ttl
     end
+
   end
 end

@@ -99,7 +99,7 @@ class Cache
   #     cache.set 'hello', 'world', 80 # seconds til it expires
   def set(k, v, ttl = nil, ignored_options = nil)
     handle_fork
-    _set k, v, extract_ttl(ttl)
+    _set k, v, _get_ttl(ttl)
   end
 
   alias :write :set
@@ -161,7 +161,7 @@ class Cache
   #     cache.fetch 'hello' { 'world' }
   def fetch(k, ttl = nil, &blk)
     handle_fork
-    _fetch(k, ttl, &blk)
+    _fetch(k, _get_ttl(ttl), &blk)
   end
 
   # Default implementation of #fetch which is overridden in some drivers
@@ -170,7 +170,7 @@ class Cache
       _get k
     elsif blk
       v = blk.call
-      _set k, v, extract_ttl(ttl)
+      _set k, v, ttl
       v
     end
   end
@@ -191,7 +191,7 @@ class Cache
     if blk and _exist?(k)
       old_v = _get k
       new_v = blk.call old_v
-      _set k, new_v, extract_ttl(ttl)
+      _set k, new_v, _get_ttl(ttl)
       new_v
     end
   end
@@ -218,15 +218,11 @@ class Cache
     # nothing
   end
 
-  def extract_ttl(ttl)
-    case ttl
-    when ::Hash
-      ttl[:expires_in] || ttl['expires_in'] || ttl[:ttl] || ttl['ttl'] || config.default_ttl
-    when ::NilClass
-      config.default_ttl
-    else
-      ttl
-    end.to_i
+  def _get_ttl(ttl)
+    if Hash === ttl
+      ttl = ttl[:expires_in] || ttl['expires_in'] || ttl[:ttl] || ttl['ttl']
+    end
+    ttl || config.default_ttl
   end
 end
 

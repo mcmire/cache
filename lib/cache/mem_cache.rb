@@ -16,7 +16,7 @@ module Cache::MemCache
   end
 
   def _fetch(k, ttl, &blk)
-    @metal.fetch k, extract_ttl(ttl), &blk
+    @metal.fetch k, ttl, &blk
   end
 
   def _delete(k)

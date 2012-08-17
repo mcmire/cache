@@ -16,7 +16,7 @@ module Cache::ActiveSupportCacheStore
   end
 
   def _fetch(k, ttl, &blk)
-    @metal.fetch k, { :expires_in => extract_ttl(ttl) }, &blk
+    @metal.fetch k, { :expires_in => _get_ttl(ttl) }, &blk
   end
 
   def _delete(k)
