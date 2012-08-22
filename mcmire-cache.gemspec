@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib", __FILE__)
-require "cache/version"
+
+require File.expand_path('../lib/cache/version', __FILE__)
 
 Gem::Specification.new do |s|
-  s.name        = "cache"
+  s.name        = "mcmire-cache"
   s.version     = Cache::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Seamus Abshere","Christoph Grabo"]
-  s.email       = ["seamus@abshere.net","chris@dinarrr.com"]
+  s.authors     = ["Seamus Abshere","Christoph Grabo", "Elliot Winkler"]
+  s.email       = ["seamus@abshere.net","chris@dinarrr.com", "elliot.winkler@gmail.com"]
   s.homepage    = "https://github.com/seamusabshere/cache"
   s.summary     = %q{A unified cache handling interface inspired by libraries like ActiveSupport::Cache::Store, Perl's Cache::Cache, CHI, etc.}
   s.description = %q{Wraps memcached, redis(-namespace), memcache-client, dalli and handles their weirdnesses, including forking}
