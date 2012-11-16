@@ -6,6 +6,10 @@ class TestNothing < TestCase
     :nothing
   end
 
+  def test_wrapped
+    assert_nothing_raised { Cache.new(Cache.new(:nothing)) }
+  end
+
   def test_get
     assert_equal nil, cache.get('hello')
     cache.set 'hello', 'world'

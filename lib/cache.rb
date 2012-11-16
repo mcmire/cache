@@ -50,14 +50,15 @@ class Cache
   def initialize(metal)
     @pid = ::Process.pid
     @config = Config.new
-    if metal == :nothing
-      @metal = nil
-      client_class = 'Nothing'
-      driver_class = 'Nothing'
-    else
+    if metal != :nothing
       @metal = Cache === metal ? metal.metal : metal
+    end
+    if @metal
       client_class = @metal.class.to_s
       driver_class = client_class.gsub('::', '')
+    else
+      client_class = 'Nothing'
+      driver_class = 'Nothing'
     end
     filename = client_class.
       gsub(/([a-z])([A-Z]+)/) { [$1.downcase, $2.downcase].join('_') }.
